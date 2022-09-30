@@ -8,24 +8,22 @@ public class Referee {
 		this.player2 = player2;
 	}
 
-	boolean isAdvantage() {
+	public boolean isAdvantage() {
 		 int scoreDifference = player1.getPoints() - player2.getPoints();
 		 return (scoreDifference == 1 || scoreDifference == -1);
 	}
 
-	String setWinningPlayerName() {
-		String winningPlayerName;
-		if (player1.getPoints() > player2.getPoints()) {
-			winningPlayerName = player1.getName();
-		} else {
-			winningPlayerName = player2.getName();
-		}
-		return winningPlayerName;
+    public String getWinningPlayerName() {
+		return (player1.getPoints() > player2.getPoints())
+                ? player1.getName()
+                : player2.getName();
 	}
 
-
-
-	boolean isOnGoing() {
+    public boolean isMatchOnGoing() {
 		return player1.getPoints() < 4 && player2.getPoints() < 4 && !(player1.getPoints() + player2.getPoints() == 6);
 	}
+
+    public boolean isMatchAtDeuce() {
+        return player1.getPoints() == player2.getPoints();
+    }
 }

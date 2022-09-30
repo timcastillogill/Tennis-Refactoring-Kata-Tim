@@ -11,51 +11,47 @@ public class TennisGame3 implements TennisGame {
 	}
 
 	public String getScore() {
-		if (referee.isOnGoing()) return getOnGoingScoreToString();
 
-		if (player1.getPoints() == player2.getPoints()) return "Deuce";
+		String winningPlayerName = referee.getWinningPlayerName();
 
-		referee.setWinningPlayerName();
+		if (referee.isMatchOnGoing()) return getRegularScoreString();
 
-		if (referee.isAdvantage()) {
-			return getAdvantageString(referee.setWinningPlayerName());
-		}
+		if (referee.isMatchAtDeuce()) return "Deuce";
 
-		return formatWinString(referee.setWinningPlayerName());
+		if (referee.isAdvantage()) return formatAdvantageString(winningPlayerName);
+
+		return formatWinString(winningPlayerName);
 	}
-
 
 	private static String formatWinString(String winningPlayerName) {
 		return "Win for " + winningPlayerName;
 	}
 
-	private static String getAdvantageString(String winningPlayerName) {
+	private static String formatAdvantageString(String winningPlayerName) {
 		return "Advantage " + winningPlayerName;
 	}
 
-	String getOnGoingScoreToString() {
+	private String getRegularScoreString() {
 		String[] scoreString = new String[]{"Love", "Fifteen", "Thirty", "Forty"};
-		if (player1.getPoints() == player2.getPoints()) {
-			return playersAtADrawString(scoreString);
-		}
-		return playerOngoingScoreString(scoreString);
+		return (referee.isMatchAtDeuce())
+				? formatMatchAtDrawScore(scoreString)
+				: formatRegularMatchScore(scoreString);
 	}
 
-	private String playersAtADrawString(String[] scoreString) {
+	private String formatMatchAtDrawScore(String[] scoreString) {
 		return scoreString[player1.getPoints()] + "-All";
 	}
 
-	private String playerOngoingScoreString(String[] scoreString) {
+	private String formatRegularMatchScore(String[] scoreString) {
 		return scoreString[player1.getPoints()] + "-" + scoreString[player2.getPoints()];
 	}
 
 	public void wonPoint(String playerName) {
-		if (playerName.equals("player1")) {
+		if (playerName.equals(player1.getName())) {
 			player1.setPoints();
 		} else {
 			player2.setPoints();
 		}
 	}
-
 
 }
