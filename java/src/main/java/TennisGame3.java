@@ -1,4 +1,4 @@
-import tennisGame1.Player;
+
 
 public class TennisGame3 implements TennisGame {
 
@@ -6,13 +6,16 @@ public class TennisGame3 implements TennisGame {
 	private int player2Points;
 	private String player1Name;
 	private String player2Name;
-	private Player player;
+	private Player player1;
+	private Player player2;
+	private Referee referee;
 
 	public TennisGame3(String player1Name, String player2Name) {
 		this.player1Name = player1Name;
 		this.player2Name = player2Name;
 		this.player1 = new Player(player1Name);
-		this.player2 = new Player(player1Name);
+		this.player2 = new Player(player2Name);
+		this.referee = new Referee();
 	}
 
 	public String getScore() {
@@ -20,7 +23,7 @@ public class TennisGame3 implements TennisGame {
 			return onGoingScore();
 		}
 
-		if (player1Points == player2Points) {
+		if (player1.getPoints() == player2.getPoints()) {
 			return "Deuce";
 		}
 
@@ -30,21 +33,16 @@ public class TennisGame3 implements TennisGame {
             return getAdvantageString(setWinningPlayerName());
         }
 
-
         return formatWinString(setWinningPlayerName());
 }
 
 
-
-
-
-
 	private String setWinningPlayerName() {
 		String winningPlayerName;
-		if (player1Points > player2Points) {
-			winningPlayerName = player1Name;
+		if (player1.getPoints() > player2.getPoints()) {
+			winningPlayerName = player1.getName();
 		} else {
-            winningPlayerName = player2Name;
+            winningPlayerName = player2.getName();
         }
 		return winningPlayerName;
 	}
@@ -54,7 +52,7 @@ public class TennisGame3 implements TennisGame {
 	}
 
 	private boolean isAdvantage(String winningPlayerName) {
-        int scoreDifference = player1Points - player2Points;
+        int scoreDifference = player1.getPoints() - player2.getPoints();
         return (scoreDifference == 1 || scoreDifference == -1);
     }
 
@@ -64,23 +62,24 @@ public class TennisGame3 implements TennisGame {
 
     private String onGoingScore() {
 		String[] scoreString = new String[]{"Love", "Fifteen", "Thirty", "Forty"};
-		String player1ScoreAsString = scoreString[player1Points];
-		String player2ScoreAsString = scoreString[player2Points];
-		if (player1Points == player2Points) {
+		String player1ScoreAsString = scoreString[player1.getPoints()];
+		String player2ScoreAsString = scoreString[player2.getPoints()];
+		if (player1.getPoints() == player2.getPoints()) {
 			return player1ScoreAsString + "-All";
 		}
 		return player1ScoreAsString + "-" + player2ScoreAsString;
 	}
 
 	private boolean isOnGoing() {
-		return player1Points < 4 && player2Points < 4 && !(player1Points + player2Points == 6);
+		return player1.getPoints() < 4 && player2.getPoints() < 4 && !(player1.getPoints() + player2.getPoints() == 6);
 	}
 
 	public void wonPoint(String playerName) {
-		if (playerName == "player1")
-			player1Points++;
-		else
-			player2Points++;
+		if (playerName.equals("player1")) {
+			player1.setPoints();
+		} else {
+			player2.setPoints();
+		}
 	}
 
 
