@@ -19,48 +19,33 @@ public class TennisGame3 implements TennisGame {
 	}
 
 	public String getScore() {
-		if (isOnGoing()) {
-			return onGoingScore();
+		if (referee.isOnGoing(player1, player2)) {
+			return getOnGoingScoreToString(player1, player2);
 		}
 
 		if (player1.getPoints() == player2.getPoints()) {
 			return "Deuce";
 		}
 
-		setWinningPlayerName();
+		referee.setWinningPlayerName(player1, player2);
 
-		if (isAdvantage(setWinningPlayerName())) {
-            return getAdvantageString(setWinningPlayerName());
+		if (referee.isAdvantage(player1, player2)) {
+            return getAdvantageString(referee.setWinningPlayerName(player1, player2));
         }
 
-        return formatWinString(setWinningPlayerName());
+        return formatWinString(referee.setWinningPlayerName(player1, player2));
 }
 
-
-	private String setWinningPlayerName() {
-		String winningPlayerName;
-		if (player1.getPoints() > player2.getPoints()) {
-			winningPlayerName = player1.getName();
-		} else {
-            winningPlayerName = player2.getName();
-        }
-		return winningPlayerName;
-	}
 
 	private static String formatWinString(String winningPlayerName) {
 		return "Win for " + winningPlayerName;
 	}
 
-	private boolean isAdvantage(String winningPlayerName) {
-        int scoreDifference = player1.getPoints() - player2.getPoints();
-        return (scoreDifference == 1 || scoreDifference == -1);
-    }
-
-    private static String getAdvantageString(String winningPlayerName) {
+	private static String getAdvantageString(String winningPlayerName) {
         return "Advantage " + winningPlayerName;
     }
 
-    private String onGoingScore() {
+	String getOnGoingScoreToString(Player player1, Player player2) {
 		String[] scoreString = new String[]{"Love", "Fifteen", "Thirty", "Forty"};
 		String player1ScoreAsString = scoreString[player1.getPoints()];
 		String player2ScoreAsString = scoreString[player2.getPoints()];
@@ -68,10 +53,6 @@ public class TennisGame3 implements TennisGame {
 			return player1ScoreAsString + "-All";
 		}
 		return player1ScoreAsString + "-" + player2ScoreAsString;
-	}
-
-	private boolean isOnGoing() {
-		return player1.getPoints() < 4 && player2.getPoints() < 4 && !(player1.getPoints() + player2.getPoints() == 6);
 	}
 
 	public void wonPoint(String playerName) {
