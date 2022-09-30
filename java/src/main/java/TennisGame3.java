@@ -1,40 +1,28 @@
 
-
 public class TennisGame3 implements TennisGame {
-
-	private int player1Points;
-	private int player2Points;
-	private String player1Name;
-	private String player2Name;
-	private Player player1;
-	private Player player2;
-	private Referee referee;
+	private final Player player1;
+	private final Player player2;
+	private final Referee referee;
 
 	public TennisGame3(String player1Name, String player2Name) {
-		this.player1Name = player1Name;
-		this.player2Name = player2Name;
 		this.player1 = new Player(player1Name);
 		this.player2 = new Player(player2Name);
-		this.referee = new Referee();
+		this.referee = new Referee(player1, player2);
 	}
 
 	public String getScore() {
-		if (referee.isOnGoing(player1, player2)) {
-			return getOnGoingScoreToString(player1, player2);
+		if (referee.isOnGoing()) return getOnGoingScoreToString();
+
+		if (player1.getPoints() == player2.getPoints()) return "Deuce";
+
+		referee.setWinningPlayerName();
+
+		if (referee.isAdvantage()) {
+			return getAdvantageString(referee.setWinningPlayerName());
 		}
 
-		if (player1.getPoints() == player2.getPoints()) {
-			return "Deuce";
-		}
-
-		referee.setWinningPlayerName(player1, player2);
-
-		if (referee.isAdvantage(player1, player2)) {
-            return getAdvantageString(referee.setWinningPlayerName(player1, player2));
-        }
-
-        return formatWinString(referee.setWinningPlayerName(player1, player2));
-}
+		return formatWinString(referee.setWinningPlayerName());
+	}
 
 
 	private static String formatWinString(String winningPlayerName) {
@@ -42,17 +30,23 @@ public class TennisGame3 implements TennisGame {
 	}
 
 	private static String getAdvantageString(String winningPlayerName) {
-        return "Advantage " + winningPlayerName;
-    }
+		return "Advantage " + winningPlayerName;
+	}
 
-	String getOnGoingScoreToString(Player player1, Player player2) {
+	String getOnGoingScoreToString() {
 		String[] scoreString = new String[]{"Love", "Fifteen", "Thirty", "Forty"};
-		String player1ScoreAsString = scoreString[player1.getPoints()];
-		String player2ScoreAsString = scoreString[player2.getPoints()];
 		if (player1.getPoints() == player2.getPoints()) {
-			return player1ScoreAsString + "-All";
+			return playersAtADrawString(scoreString);
 		}
-		return player1ScoreAsString + "-" + player2ScoreAsString;
+		return playerOngoingScoreString(scoreString);
+	}
+
+	private String playersAtADrawString(String[] scoreString) {
+		return scoreString[player1.getPoints()] + "-All";
+	}
+
+	private String playerOngoingScoreString(String[] scoreString) {
+		return scoreString[player1.getPoints()] + "-" + scoreString[player2.getPoints()];
 	}
 
 	public void wonPoint(String playerName) {
